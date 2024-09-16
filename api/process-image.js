@@ -2,6 +2,7 @@ const formidable = require('formidable');
 const axios = require('axios');
 const FormData = require('form-data');
 const fs = require('fs');
+const path = require('path');
 
 module.exports = async (req, res) => {
   const form = new formidable.IncomingForm();
@@ -14,14 +15,25 @@ module.exports = async (req, res) => {
 
     const imageFile = files.image;
 
-    if (!imageFile) {
+    // Check if the file and its path exist
+    if (!imageFile || !imageFile.filepath) {
+      console.error('No image file or file path provided:', files);
       return res.status(400).json({ status: 'FAILED', creator: 'Abro Tech', result: 'No image file provided' });
     }
 
     try {
-      const uploadFormData = new FormData();
-      uploadFormData.append('file', fs.createReadStream(imageFile.filepath));
+      // Ensure the file path is valid
+      const filePath = path.resolve(imageFile.filepath);
+      console.log('File path:', filePath);
 
+      // Create a readable stream from the file path
+      const fileStream = fs.createReadStream(filePath);
+
+      // Prepare form data for upload
+      const uploadFormData = new FormData();
+      uploadFormData.append('file', fileStream);
+
+      // Upload the image
       const uploadResponse = await axios.post('https://api.giftedtechnexus.co.ke/api/tools/upload', uploadFormData, {
         headers: uploadFormData.getHeaders()
       });
@@ -29,6 +41,7 @@ module.exports = async (req, res) => {
       const imageUrl = uploadResponse.data.result;
 
       if (imageUrl) {
+        // Process the image
         const hdrResponse = await axios.get(`https://api.junn4.my.id/tools/hdr?url=${encodeURIComponent(imageUrl)}`);
 
         if (hdrResponse.data.result) {
