@@ -4,6 +4,9 @@ const FormData = require('form-data');
 const fs = require('fs');
 const path = require('path');
 
+// Your Imgur Client-ID
+const IMGUR_CLIENT_ID = '38f5ba01574a08a';
+
 module.exports = async (req, res) => {
   const form = new formidable.IncomingForm();
 
@@ -15,7 +18,6 @@ module.exports = async (req, res) => {
 
     const imageFile = files.image;
 
-    // Check if the file and its path exist
     if (!imageFile || !imageFile.filepath) {
       console.error('No image file or file path provided:', files);
       return res.status(400).json({ status: 'FAILED', creator: 'Abro Tech', result: 'No image file provided' });
@@ -29,19 +31,22 @@ module.exports = async (req, res) => {
       // Create a readable stream from the file path
       const fileStream = fs.createReadStream(filePath);
 
-      // Prepare form data for upload
+      // Prepare form data for upload to Imgur
       const uploadFormData = new FormData();
-      uploadFormData.append('file', fileStream);
+      uploadFormData.append('image', fileStream);
 
-      // Upload the image
-      const uploadResponse = await axios.post('https://api.giftedtechnexus.co.ke/api/tools/upload', uploadFormData, {
-        headers: uploadFormData.getHeaders()
+      // Upload the image to Imgur
+      const imgurResponse = await axios.post('https://api.imgur.com/3/image', uploadFormData, {
+        headers: {
+          ...uploadFormData.getHeaders(),
+          'Authorization': `Client-ID ${IMGUR_CLIENT_ID}`
+        }
       });
 
-      const imageUrl = uploadResponse.data.result;
+      const imageUrl = imgurResponse.data.data.link;
 
       if (imageUrl) {
-        // Process the image
+        // Process the image with HDR API
         const hdrResponse = await axios.get(`https://api.junn4.my.id/tools/hdr?url=${encodeURIComponent(imageUrl)}`);
 
         if (hdrResponse.data.result) {
