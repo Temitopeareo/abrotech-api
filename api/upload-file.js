@@ -17,9 +17,11 @@ module.exports = async (req, res) => {
         req.on('end', () => resolve(Buffer.concat(chunks)));
         req.on('error', reject);
       });
+      
+        // Add the file to the form
+const fileType = req.headers['content-type'];
+      form.append('fileToUpload', Readable.from(buffer), { filename: `file.${fileType.split('/')[1]}` });
 
-      // Add the file to the form
-      form.append('fileToUpload', Readable.from(buffer), { filename: 'file' });
       // Send POST request to Catbox API
       const response = await fetch('https://catbox.moe/user/api.php', {
         method: 'POST',
