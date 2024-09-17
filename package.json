@@ -3,13 +3,11 @@
   "version": "1.0.0",
   "description": "API to upload file to Catbox",
   "main": "api/upload-file.js",
-  "type": "module",
   "scripts": {
     "start": "vercel dev"
   },
   "dependencies": {
     "form-data": "^4.0.0",
-    "file-type":"^16.5.3",
     "node-fetch": "^3.3.2"
   }
 }
