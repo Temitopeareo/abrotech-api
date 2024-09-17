@@ -17,11 +17,17 @@ module.exports = async (req, res) => {
         req.on('end', () => resolve(Buffer.concat(chunks)));
         req.on('error', reject);
       });
-      
-        // Add the file to the form
-const fileType = req.headers['content-type'];
-      form.append('fileToUpload', Readable.from(buffer), { filename: `file.${fileType.split('/')[1]}` });
+      // Get the content type from the headers or default to 'application/octet-stream'
+      const contentType = req.headers['content-type'] || 'application/octet-stream';
+      const fileExtension = contentType.split('/')[1] || 'bin';
 
+ // Use the same content type in the file's URL
+      const fileName = `file.${fileExtension}`;
+
+      // Add the file to the form with the correct file name and content type
+      form.append('fileToUpload', Readable.from(buffer), { filename: fileName });
+
+      //
       // Send POST request to Catbox API
       const response = await fetch('https://catbox.moe/user/api.php', {
         method: 'POST',
