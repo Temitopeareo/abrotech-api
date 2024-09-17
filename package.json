@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "API to upload file to Catbox",
   "main": "api/upload-file.js",
+  "type": "module",
   "scripts": {
     "start": "vercel dev"
   },
