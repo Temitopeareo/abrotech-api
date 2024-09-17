@@ -1,15 +1,14 @@
-import FormData from 'form-data';
+import FormData from 'form-data'; // Importing using ES module syntax
 import { Readable } from 'stream';
-import fetch from 'node-fetch';  // Importing fetch directly
 
-const CATBOX_USERHASH = '3dd217ecb3ee790b1be6aff01';
-
-export default async (req, res) => {
+export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
+      const { default: fetch } = await import('node-fetch'); // Dynamic import
+
       const form = new FormData();
       form.append('reqtype', 'fileupload');
-      form.append('userhash', CATBOX_USERHASH);
+      form.append('userhash', '3dd217ecb3ee790b1be6aff01'); 
 
       // Read the file from the request
       const buffer = await new Promise((resolve, reject) => {
@@ -46,4 +45,4 @@ export default async (req, res) => {
     // Handle any non-POST requests
     res.status(405).json({ success: false, message: 'Method Not Allowed' });
   }
-};
+}
