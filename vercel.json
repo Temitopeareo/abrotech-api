@@ -1,5 +1,10 @@
 {
   "version": 2,
+  "functions": {
+    "api/upload-file.js": {
+      "runtime": "nodejs18.x"
+    }
+  },
   "builds": [
     {
       "src": "api/upload-file.js",
