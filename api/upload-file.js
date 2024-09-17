@@ -18,19 +18,15 @@ export default async (req, res) => {
         req.on('error', reject);
       });
 
-      // Detect the file type using file-type
-      const { ext, mime } = await fileType.fromBuffer(buffer) || {};
+      // Extract the filename from the Content-Disposition header if available
+      const contentDisposition = req.headers['content-disposition'];
+      const filename = contentDisposition ? contentDisposition.split('filename=')[1].replace(/"/g, '') : 'file.bin';
 
-      if (!ext || !mime) {
-        throw new Error('Unable to determine file type');
-      }
+      // Add the file to the form with the actual filename
+      form.append('fileToUpload', Readable.from(buffer), { filename });
 
-      // Use the detected extension for the file name
-      const fileName = `file.${ext}`;
 
-      // Add the file to the form with the correct file name and content type
-      form.append('fileToUpload', Readable.from(buffer), { filename: fileName, contentType: mime });
-
+      
       // Send POST request to Catbox API
       const response = await fetch('https://catbox.moe/user/api.php', {
         method: 'POST',
