@@ -1,14 +1,14 @@
-const FormData = require('form-data');
-const { Readable } = require('stream');
+import FormData from 'form-data';
+import { Readable } from 'stream';
+import fetch from 'node-fetch';
+import fileType from 'file-type';
 
-module.exports = async (req, res) => {
+export default async (req, res) => {
   if (req.method === 'POST') {
     try {
-      const { default: fetch } = await import('node-fetch');  // Dynamic import for node-fetch
-
       const form = new FormData();
       form.append('reqtype', 'fileupload');
-      form.append('userhash', '3dd217ecb3ee790b1be6aff01'); 
+      form.append('userhash', '3dd217ecb3ee790b1be6aff01'); // Replace with actual userhash if needed
 
       // Read the file from the request
       const buffer = await new Promise((resolve, reject) => {
@@ -17,17 +17,20 @@ module.exports = async (req, res) => {
         req.on('end', () => resolve(Buffer.concat(chunks)));
         req.on('error', reject);
       });
-      // Get the content type from the headers or default to 'application/octet-stream'
-      const contentType = req.headers['content-type'] || 'application/octet-stream';
-      const fileExtension = contentType.split('/')[1] || 'bin';
 
- // Use the same content type in the file's URL
-      const fileName = `file.${fileExtension}`;
+      // Detect the file type using file-type
+      const { ext, mime } = await fileType.fromBuffer(buffer) || {};
+
+      if (!ext || !mime) {
+        throw new Error('Unable to determine file type');
+      }
+
+      // Use the detected extension for the file name
+      const fileName = `file.${ext}`;
 
       // Add the file to the form with the correct file name and content type
-      form.append('fileToUpload', Readable.from(buffer), { filename: fileName });
+      form.append('fileToUpload', Readable.from(buffer), { filename: fileName, contentType: mime });
 
-      //
       // Send POST request to Catbox API
       const response = await fetch('https://catbox.moe/user/api.php', {
         method: 'POST',
@@ -42,11 +45,11 @@ module.exports = async (req, res) => {
         success: true,
         Creator: "ABRO TECH",
         Contact: "wa.me/2348100151048",
-        url: data,  // This will be the URL of the uploaded image
+        url: `https://file.catbox.moe/${data}`, // Constructing the URL with the file ID returned by Catbox
       });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ success: false, message: 'Failed to upload image to Catbox' });
+      console.error('Error uploading file:', error.message);
+      res.status(500).json({ success: false, message: 'Failed to upload file to Catbox' });
     }
   } else {
     // Handle any non-POST requests
