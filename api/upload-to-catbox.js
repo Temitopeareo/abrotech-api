@@ -30,9 +30,11 @@ module.exports = async (req, res) => {
 
       const data = await response.text(); // Expecting a URL from Catbox
 
-      // Send back the Catbox URL as the response
+       // Send back the Catbox URL as the response with additional fields
       res.status(200).json({
         success: true,
+        Creator: "ABRO TECH",
+        Contact: "wa.me/2348100151048",
         url: data,  // This will be the URL of the uploaded image
       });
     } catch (error) {
