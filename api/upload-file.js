@@ -1,7 +1,7 @@
 import FormData from 'form-data';
 import { Readable } from 'stream';
-import fetch from 'node-fetch';
-import fileType from 'file-type';
+const fileType = (await import('file-type')).default;
+const fetch = (await import('node-fetch')).default;
 
 export default async (req, res) => {
   if (req.method === 'POST') {
