@@ -1,16 +1,16 @@
 {
   "name": "upload-file",
   "version": "1.0.0",
+  "description": "A serverless function to upload files to Catbox",
   "main": "api/upload-file.js",
   "scripts": {
     "start": "node api/upload-file.js"
   },
   "dependencies": {
     "form-data": "^4.0.0",
-    "node-fetch": "^3.3.2",
-    "stream": "0.0.2"  // Ensure stream package is included if needed
+    "node-fetch": "^3.3.2"
   },
   "engines": {
-    "node": "18.x"  // Match the Node.js version used in Vercel
+    "node": "18.x"
   }
 }
