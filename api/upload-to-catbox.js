@@ -1,16 +1,14 @@
 const FormData = require('form-data');
 const { Readable } = require('stream');
-const fetch = require('node-fetch');
-
-// Your Catbox userhash
-const CATBOX_USERHASH = '3dd217ecb3ee790b1be6aff01'; 
 
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     try {
+      const { default: fetch } = await import('node-fetch');  // Dynamic import for node-fetch
+
       const form = new FormData();
       form.append('reqtype', 'fileupload');
-      form.append('userhash', CATBOX_USERHASH);
+      form.append('userhash', '3dd217ecb3ee790b1be6aff01'); 
 
       // Read the file from the request
       const buffer = await new Promise((resolve, reject) => {
