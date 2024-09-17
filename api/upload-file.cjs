@@ -1,6 +1,6 @@
 const FormData = require('form-data');
 const Readable = require('stream');
-const fetch = (await import('node-fetch')).default;
+const fetch = require('node-fetch');
 
 export default async (req, res) => {
   if (req.method === 'POST') {
