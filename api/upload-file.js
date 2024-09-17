@@ -19,8 +19,7 @@ module.exports = async (req, res) => {
       });
 
       // Add the file to the form
-      form.append('fileToUpload', Readable.from(buffer), { filename: 'file.jpg' });
-
+      form.append('fileToUpload', Readable.from(buffer), { filename: 'file' });
       // Send POST request to Catbox API
       const response = await fetch('https://catbox.moe/user/api.php', {
         method: 'POST',
