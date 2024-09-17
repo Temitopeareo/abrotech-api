@@ -1,6 +1,5 @@
-import FormData from 'form-data';
-import { Readable } from 'stream';
-const fileType = (await import('file-type')).default;
+const FormData = require('form-data');
+const Readable = require('stream');
 const fetch = (await import('node-fetch')).default;
 
 export default async (req, res) => {
@@ -8,7 +7,10 @@ export default async (req, res) => {
     try {
       const form = new FormData();
       form.append('reqtype', 'fileupload');
-      form.append('userhash', '3dd217ecb3ee790b1be6aff01'); // Replace with actual userhash if needed
+//      form.append('userhash', '3dd217ecb3ee790b1be6aff01'); // Replace with actual userhash if needed
+
+      // Get the filename from the headers or use a default name
+      const fileName = req.headers['x-file-name'] || 'default_file';
 
       // Read the file from the request
       const buffer = await new Promise((resolve, reject) => {
@@ -18,13 +20,8 @@ export default async (req, res) => {
         req.on('error', reject);
       });
 
-
-      // Extract the filename from the Content-Disposition header if available
-      const contentDisposition = req.headers['content-disposition'];
-      const filename = contentDisposition ? contentDisposition.split('filename=')[1].replace(/"/g, '');
-
-      // Add the file to the form with the actual filename
-      form.append('fileToUpload', Readable.from(buffer), { filename });
+      // Add the file to the form with the correct file name
+      form.append('fileToUpload', Readable.from(buffer), { filename: fileName });
 
       // Send POST request to Catbox API
       const response = await fetch('https://catbox.moe/user/api.php', {
