@@ -1,10 +1,10 @@
-import FormData from 'form-data'; // Importing using ES module syntax
-import { Readable } from 'stream';
+const FormData = require('form-data');
+const { Readable } = require('stream');
 
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   if (req.method === 'POST') {
     try {
-      const { default: fetch } = await import('node-fetch'); // Dynamic import
+      const { default: fetch } = await import('node-fetch');  // Dynamic import for node-fetch
 
       const form = new FormData();
       form.append('reqtype', 'fileupload');
@@ -45,4 +45,4 @@ export default async function handler(req, res) {
     // Handle any non-POST requests
     res.status(405).json({ success: false, message: 'Method Not Allowed' });
   }
-}
+};
