@@ -12,28 +12,12 @@ export const config = {
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     try {
-      const form = new formidable.IncomingForm();
-      
-      // Parse the incoming form data
-      form.parse(req, async (err, fields, files) => {
-        if (err) {
-          console.error('Error parsing form:', err.message);
-          return res.status(500).json({ success: false, message: 'Failed to parse form data' });
-        }
-
-        // Extract the uploaded file
-        const file = files.fileToUpload;
-        if (!file) {
-          return res.status(400).json({ success: false, message: 'No file provided' });
-        }
-
-        const filePath = file.filepath;
 
         // Create a new FormData instance and append the file
         const formData = new FormData();
         formData.append('reqtype', 'fileupload');
         formData.append('userhash', '3dd217ecb3ee790b1be6aff01');
-        formData.append('fileToUpload', fs.createReadStream(filePath));
+        formData.append('fileToUpload', req.file.buffer, req.file.originalname);
 
         // Send POST request to Catbox API
         const response = await fetch('https://catbox.moe/user/api.php', {
