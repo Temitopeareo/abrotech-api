@@ -16,9 +16,16 @@ module.exports = async (req, res) => {
         req.on('end', () => resolve(Buffer.concat(chunks)));
         req.on('error', reject);
       });
+// Extract the MIME type from the request
+const contentType = req.headers['content-type'];
 
-      // Add the file to the form
-      form.append('fileToUpload', Readable.from(buffer), { filename: 'file.jpg' });
+// Get the file extension based on the content type
+const extension = mime.extension(contentType);
+
+// Append the file to the form with the correct dynamic filename
+form.append('fileToUpload', Readable.from(buffer), { 
+  filename: `file.${extension}` // Filename follows your preferred pattern
+});
 
       // form.append('userhash', '3dd217ecb3ee790b1be6aff01');
 
