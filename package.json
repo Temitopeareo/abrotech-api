@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "form-data": "^4.0.0",
-    "node-fetch": "^2.7.0"
+    "node-fetch": "^2.7.0",
+    "formidable": "^3.5.1"
   }
 }
