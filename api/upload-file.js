@@ -1,49 +1,56 @@
 const FormData = require('form-data');
-const { Readable } = require('stream');
+const fs = require('fs'); // Ensure to import 'fs' for file operations
 const fetch = require('node-fetch');
+const formidable = require('formidable');
+
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     try {
-     const form = new FormData();
-      form.append('reqtype', 'fileupload');
-      form.append('userhash', '3dd217ecb3ee790b1be6aff01'); 
+      const form = new formidable.IncomingForm();
+      
+      // Parse the incoming form data
+      form.parse(req, async (err, fields, files) => {
+        if (err) {
+          console.error('Error parsing form:', err.message);
+          return res.status(500).json({ success: false, message: 'Failed to parse form data' });
+        }
 
-      // Read the file from the request
-      const buffer = await new Promise((resolve, reject) => {
-        const chunks = [];
-        req.on('data', chunk => chunks.push(chunk));
-        req.on('end', () => resolve(Buffer.concat(chunks)));
-        req.on('error', reject);
-      });
-// Extract the MIME type from the request
-const contentType = req.headers['content-type'];
+        // Extract the uploaded file
+        const file = files.fileToUpload;
+        if (!file) {
+          return res.status(400).json({ success: false, message: 'No file provided' });
+        }
 
-// Get the file extension based on the content type
-const extension = mime.extension(contentType);
+        const filePath = file.filepath;
 
-// Append the file to the form with the correct dynamic filename
-form.append('fileToUpload', Readable.from(buffer), { 
-  filename: `file.${extension}` // Filename follows your preferred pattern
-});
+        // Create a new FormData instance and append the file
+        const formData = new FormData();
+        formData.append('reqtype', 'fileupload');
+        formData.append('userhash', '3dd217ecb3ee790b1be6aff01');
+        formData.append('fileToUpload', fs.createReadStream(filePath));
 
-      // form.append('userhash', '3dd217ecb3ee790b1be6aff01');
+        // Send POST request to Catbox API
+        const response = await fetch('https://catbox.moe/user/api.php', {
+          method: 'POST',
+          body: formData,
+          headers: formData.getHeaders(),
+        });
 
-      // Send POST request to Catbox API
-      const response = await fetch('https://catbox.moe/user/api.php', {
-        method: 'POST',
-        body: form,
-        headers: form.getHeaders(),
-      });
+        const data = await response.text(); // Expect the URL as the response
 
-      const data = await response.text(); // Expect the URL as the response
-
-      // Send back the Catbox URL as the response along with additional fields
-      res.status(200).json({
-        success: true,
-        Creator: "ABRO TECH",
-        Contact: "wa.me/2348100151048",
-        url: data,  // Use the URL directly from the Catbox response
+        // Send back the Catbox URL as the response along with additional fields
+        res.status(200).json({
+          success: true,
+          Creator: "ABRO TECH",
+          Contact: "wa.me/2348100151048",
+          url: data,  // Use the URL directly from the Catbox response
+        });
       });
     } catch (error) {
       console.error('Error uploading file:', error.message);
