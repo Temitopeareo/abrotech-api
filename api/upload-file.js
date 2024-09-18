@@ -5,7 +5,11 @@ const fetch = require('node-fetch');
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     try {
-      // Capture the incoming file buffer
+     const form = new FormData();
+      form.append('reqtype', 'fileupload');
+      form.append('userhash', '3dd217ecb3ee790b1be6aff01'); 
+
+      // Read the file from the request
       const buffer = await new Promise((resolve, reject) => {
         const chunks = [];
         req.on('data', chunk => chunks.push(chunk));
@@ -13,13 +17,9 @@ module.exports = async (req, res) => {
         req.on('error', reject);
       });
 
-      const form = new FormData();
-      // Append the fileToUpload field (using Readable stream for the buffer)
-      form.append('fileToUpload', Readable.from(buffer));
-      // Append the reqtype as "fileupload"
-      form.append('reqtype', 'fileupload');
+      // Add the file to the form
+      form.append('fileToUpload', Readable.from(buffer), { filename: 'file.jpg' });
 
-      // Optionally, append a userhash if needed
       // form.append('userhash', '3dd217ecb3ee790b1be6aff01');
 
       // Send POST request to Catbox API
