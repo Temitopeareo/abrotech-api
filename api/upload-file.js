@@ -5,7 +5,7 @@ const fetch = require('node-fetch');
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     try {
-      // Read the file from the request body
+      // Capture the incoming file buffer
       const buffer = await new Promise((resolve, reject) => {
         const chunks = [];
         req.on('data', chunk => chunks.push(chunk));
@@ -14,14 +14,12 @@ module.exports = async (req, res) => {
       });
 
       const form = new FormData();
-      form.append('reqtype', 'fileupload');
-      // Use Readable stream to handle the file buffer
+      // Append the fileToUpload field (using Readable stream for the buffer)
       form.append('fileToUpload', Readable.from(buffer));
+      // Append the reqtype as "fileupload"
+      form.append('reqtype', 'fileupload');
 
-      // Get the filename from the headers or use a default name if not provided
-      const fileName = req.headers['x-file-name'] || 'default_file';
-
-      // Optionally, append a userhash if required
+      // Optionally, append a userhash if needed
       // form.append('userhash', '3dd217ecb3ee790b1be6aff01');
 
       // Send POST request to Catbox API
@@ -31,21 +29,21 @@ module.exports = async (req, res) => {
         headers: form.getHeaders(),
       });
 
-      const url = await response.text(); // The response is expected to be a URL
+      const data = await response.text(); // Expect the URL as the response
 
-      // Send back the Catbox URL as the response with additional fields
+      // Send back the Catbox URL as the response along with additional fields
       res.status(200).json({
         success: true,
         Creator: "ABRO TECH",
         Contact: "wa.me/2348100151048",
-        url: url.trim(),  // Use the URL directly from the Catbox response
+        url: data,  // Use the URL directly from the Catbox response
       });
     } catch (error) {
       console.error('Error uploading file:', error.message);
       res.status(500).json({ success: false, message: 'Failed to upload file to Catbox' });
     }
   } else {
-    // Handle any non-POST requests
+    // Handle non-POST requests
     res.status(405).json({ success: false, message: 'Method Not Allowed' });
   }
 };
