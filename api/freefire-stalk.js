@@ -13,35 +13,8 @@ module.exports = async (req, res) => {
 
     // Filter out only the fields you want to display
 
-    return res.json({"userinfoabro": {
-        accountId: data.basicInfo.accountId,
-        nickname: data.basicInfo.nickname,
-        region: data.basicInfo.region,
-        level: data.basicInfo.level,
-        exp: data.basicInfo.exp,
-        badgeCount: data.basicInfo.badgeCnt,
-        liked: data.basicInfo.liked
-      },
-      "claninfoabro": {
-        clanId: data.clanBasicInfo.clanId,
-        clanName: data.clanBasicInfo.clanName,
-        leaderId: data.clanBasicInfo.captainId,
-        clanLevel: data.clanBasicInfo.clanLevel,
-        numberofmem: data.clanBasicInfo.memberNum
-      },
-      "leaderInfo": {
-        LeaderId: data.captainBasicInfo.accountId,
-        LeaderNick: data.captainBasicInfo.nickname,
-        LeaderLevel: data.captainBasicInfo.level,
-        LeaderLikes: data.captainBasicInfo.liked
-      },
-      "petinfoabro": {
-        petName: data.petInfo.name,
-        petLevel: data.petInfo.level
-      },
-      "extrainfoabro": {
-        userAbout: data.socialInfo.signature,
-        HonourScore: data.creditScoreInfo.creditScore
+    return res.json({
+      nickname: data.basicInfo.nickname,
         });
   } catch (error) {
     return res.status(500).json({ error: 'Failed to fetch player data' });
