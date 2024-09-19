@@ -1,39 +1,34 @@
 const fetch = require('node-fetch');
 
 module.exports = async (req, res) => {
-  // Extract query parameters from the request
   const { region, uid } = req.query;
 
-  // Validate that both region and uid are provided
   if (!region || !uid) {
     return res.status(400).json({ error: 'Please provide both region and uid' });
   }
 
   try {
-    // Construct the URL with query parameters
     const url = `https://free-ff-api-src-5plp.onrender.com/api/v1/account?region=${encodeURIComponent(region)}&uid=${encodeURIComponent(uid)}`;
     
-    // Send the GET request to the API
+    console.log('Fetching URL:', url); // Log the URL being fetched
+
     const response = await fetch(url);
+    console.log('Response Status:', response.status); // Log response status
     
-    // Check if the response is successful
     if (!response.ok) {
+      const errorBody = await response.text(); // Read error response as text
+      console.error('Error Response Body:', errorBody); // Log the error response body
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    // Parse the JSON response
     const data = await response.json();
+    console.log('Fetched Data:', data); // Log the fetched data
 
-    // Return the filtered data
     return res.json({
       nickname: data.basicInfo.nickname,
     });
   } catch (error) {
-    // Log and return an error response
-    console.error('Failed to fetch player data:', error.message);
-    return res.status(500).json({
-      error: 'Failed to fetch player data', 
-      details: error.message 
-    });
+    console.error('Failed to fetch player data:', error); // Log full error object
+    return res.status(500).json({ error: 'Failed to fetch player data', details: error.message });
   }
 };
