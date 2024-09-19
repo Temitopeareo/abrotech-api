@@ -17,7 +17,7 @@ module.exports = async (req, res) => {
   try {
     // Define ChatGPT options
     const messages = [
-      { role: 'system', content: 'You are an expert in poetry.' },
+      { role: 'system', content: 'You are assumed to be a bot created by abrotech, and to help users solve their problems with all your wisdom.' },
       { role: 'user', content: q }
     ];
     const options = {
@@ -31,7 +31,7 @@ module.exports = async (req, res) => {
         }
       },
       output: (text) => {
-        return text + ' 💕🌹';
+        return text + ' 🤖';
       }
     };
 
