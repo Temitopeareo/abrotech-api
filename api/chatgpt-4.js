@@ -38,7 +38,12 @@ module.exports = async (req, res) => {
     // Get ChatGPT response
     const text = await g4f.chatCompletion(messages, options);
     
-    res.status(200).json({ response: text });
+    res.status(200).json({
+          success: true,
+          Creator: "ABRO TECH",
+          Contact: "wa.me/2348100151048",
+          url: text,  // The text from chatGpt-4
+        });
 
   } catch (error) {
     console.error('Error processing request:', error.message);
