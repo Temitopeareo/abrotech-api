@@ -12,8 +12,8 @@ module.exports = async (req, res) => {
     const data = await response.json();
 
     // Filter out only the fields you want to display
-    const filteredData = {
-      "userinfoabro": {
+
+    return res.json({"userinfoabro": {
         accountId: data.basicInfo.accountId,
         nickname: data.basicInfo.nickname,
         region: data.basicInfo.region,
@@ -42,10 +42,7 @@ module.exports = async (req, res) => {
       "extrainfoabro": {
         userAbout: data.socialInfo.signature,
         HonourScore: data.creditScoreInfo.creditScore
-      }
-    };
-
-    return res.json(filteredData);
+        });
   } catch (error) {
     return res.status(500).json({ error: 'Failed to fetch player data' });
   }
