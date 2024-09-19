@@ -1,0 +1,14 @@
+{
+  "abrotech": {
+    "key": "your_abrotech_key",
+    "limit": 30,
+    "requestCount": 0,
+    "resetTime": 0
+  },
+  "abrotech001": {
+    "key": "your_abrotech001_key",
+    "limit": Infinity,
+    "requestCount": 0,
+    "resetTime": 0
+  }
+}
