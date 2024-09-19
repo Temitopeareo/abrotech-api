@@ -29,7 +29,42 @@ module.exports = async (req, res) => {
 
     // Send the external API response as-is
     const data = await response.json();
-    return res.json(data);
+    const abro = 
+    return res.json({
+      "success": true,
+  "Creator": "ABRO TECH",
+  "Contact": "wa.me/2348100151048",
+      "userinfoabro": {
+        accountId: data.basicInfo.accountId,
+        nickname: data.basicInfo.nickname,
+        region: data.basicInfo.region,
+        level: data.basicInfo.level,
+        exp: data.basicInfo.exp,
+        badgeCount: data.basicInfo.badgeCnt,
+        liked: data.basicInfo.liked,
+      },
+      "claninfoabro": {
+        clanId: data.clanBasicInfo.clanId,
+        clanName: data.clanBasicInfo.clanName,
+        leaderId: data.clanBasicInfo.captainId,
+        clanLevel: data.clanBasicInfo.clanLevel,
+        numberofmem: data.clanBasicInfo.memberNum,
+      },
+      "leaderInfo": {
+        LeaderId: data.captainBasicInfo.accountId,
+        LeaderNick: data.captainBasicInfo.nickname,
+        LeaderLevel: data.captainBasicInfo.level,
+        LeaderLikes: data.captainBasicInfo.liked,
+      },
+      "petinfoabro": {
+        petName: data.petInfo.name,
+        petLevel: data.petInfo.level,
+      },
+      "extrainfoabro": {
+        userAbout: data.socialInfo.signature,
+        HonourScore: data.creditScoreInfo.creditScore,
+      }
+    };);
   } catch (error) {
     // Log the error and send an error response
     console.error('Failed to fetch player data:', error.message);
