@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "API to upload file to Catbox",
   "main": "api/upload-file.js",
-  "scripts": {
-    "start": "node api/upload-file.js"
-  },
   "dependencies": {
     "form-data": "^4.0.0",
     "multer": "^1.4.5-lts.1",
