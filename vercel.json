@@ -4,12 +4,21 @@
     {
       "src": "api/upload-file.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "public/index.html",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
       "src": "/api/upload-file",
       "dest": "/api/upload-file.js"
+    },
+    {
+      "src": "/",
+      "dest": "/index.html"
     }
   ]
 }
+
