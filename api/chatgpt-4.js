@@ -42,7 +42,8 @@ module.exports = async (req, res) => {
           success: true,
           Creator: "ABRO TECH",
           Contact: "wa.me/2348100151048",
-          url: text,  // The text from chatGpt-4
+          
+          result: text,  // The text from chatGpt-4
         });
 
   } catch (error) {
