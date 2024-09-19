@@ -10,7 +10,7 @@
       "use": "@vercel/node"
     },
     {
-      "src": "api/freefire-stalk.js"
+      "src": "api/freefire-stalk.js",
       "use": "@vercel/node"
     }
   ],
@@ -24,7 +24,7 @@
       "dest": "/api/chatgpt-4.js"
     },
     {
-      "src": "/api/freefire-stalk"
+      "src": "/api/freefire-stalk",
       "dest": "/api/freefire-stalk.js"
     }
   ]
