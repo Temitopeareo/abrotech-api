@@ -1,22 +1,32 @@
 const FormData = require('form-data');
 const fs = require('fs'); // Ensure to import 'fs' for file operations
 const fetch = require('node-fetch');
-const formidable = require('formidable');
+const multer = require('multer'); // Assuming you're using multer
+
+// Set up multer storage
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 module.exports.config = {
   api: {
-    bodyParser: false,
+    bodyParser: false, // Disable body parsing in Vercel
   },
 };
 
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
-    try {
+    // Handle file upload using multer
+    upload.single('fileToUpload')(req, res, async (err) => {
+      if (err) {
+        console.error('Error uploading file:', err.message);
+        return res.status(500).json({ success: false, message: 'Failed to upload file' });
+      }
 
+      try {
         // Create a new FormData instance and append the file
         const formData = new FormData();
         formData.append('reqtype', 'fileupload');
-        formData.append('userhash', '3dd217ecb3ee790b1be6aff01');
+        formData.append('userhash', '3dd217ecb3ee790b1be6aff01'); // Replace with your userhash
         formData.append('fileToUpload', req.file.buffer, req.file.originalname);
 
         // Send POST request to Catbox API
@@ -35,11 +45,11 @@ module.exports = async (req, res) => {
           Contact: "wa.me/2348100151048",
           url: data,  // Use the URL directly from the Catbox response
         });
-      });
-    } catch (error) {
-      console.error('Error uploading file:', error.message);
-      res.status(500).json({ success: false, message: 'Failed to upload file to Catbox' });
-    }
+      } catch (error) {
+        console.error('Error uploading file:', error.message);
+        res.status(500).json({ success: false, message: 'Failed to upload file to Catbox' });
+      }
+    });
   } else {
     // Handle non-POST requests
     res.status(405).json({ success: false, message: 'Method Not Allowed' });
