@@ -3,7 +3,7 @@ const fs = require('fs'); // Ensure to import 'fs' for file operations
 const fetch = require('node-fetch');
 const formidable = require('formidable');
 
-export const config = {
+module.exports.config = {
   api: {
     bodyParser: false,
   },
