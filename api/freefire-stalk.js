@@ -20,28 +20,28 @@ module.exports = async (req, res) => {
         level: data.basicInfo.level,
         exp: data.basicInfo.exp,
         badgeCount: data.basicInfo.badgeCnt,
-        liked: data.basicInfo.liked,
+        liked: data.basicInfo.liked
       },
       "claninfoabro": {
         clanId: data.clanBasicInfo.clanId,
         clanName: data.clanBasicInfo.clanName,
         leaderId: data.clanBasicInfo.captainId,
         clanLevel: data.clanBasicInfo.clanLevel,
-        numberofmem: data.clanBasicInfo.memberNum,
+        numberofmem: data.clanBasicInfo.memberNum
       },
       "leaderInfo": {
         LeaderId: data.captainBasicInfo.accountId,
         LeaderNick: data.captainBasicInfo.nickname,
         LeaderLevel: data.captainBasicInfo.level,
-        LeaderLikes: data.captainBasicInfo.liked,
+        LeaderLikes: data.captainBasicInfo.liked
       },
       "petinfoabro": {
         petName: data.petInfo.name,
-        petLevel: data.petInfo.level,
+        petLevel: data.petInfo.level
       },
       "extrainfoabro": {
         userAbout: data.socialInfo.signature,
-        HonourScore: data.creditScoreInfo.creditScore,
+        HonourScore: data.creditScoreInfo.creditScore
       }
     };
 
