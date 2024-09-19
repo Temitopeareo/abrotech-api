@@ -1,50 +1,57 @@
 const FormData = require('form-data');
-const Readable = require('stream');
+const fs = require('fs'); // Ensure to import 'fs' for file operations
 const fetch = require('node-fetch');
+const multer = require('multer'); // Assuming you're using multer
 
-export default async (req, res) => {
+// Set up multer storage
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+module.exports.config = {
+  api: {
+    bodyParser: false, // Disable body parsing in Vercel
+  },
+};
+
+module.exports = async (req, res) => {
   if (req.method === 'POST') {
-    try {
-      const form = new FormData();
-      form.append('reqtype', 'fileupload');
-//      form.append('userhash', '3dd217ecb3ee790b1be6aff01'); // Replace with actual userhash if needed
+    // Handle file upload using multer
+    upload.single('fileToUpload')(req, res, async (err) => {
+      if (err) {
+        console.error('Error uploading file:', err.message);
+        return res.status(500).json({ success: false, message: 'Failed to upload file' });
+      }
 
-      // Get the filename from the headers or use a default name
-      const fileName = req.headers['x-file-name'] || 'default_file';
+      try {
+        // Create a new FormData instance and append the file
+        const formData = new FormData();
+        formData.append('reqtype', 'fileupload');
+        formData.append('userhash', '3dd217ecb3ee790b1be6aff01'); // Replace with your userhash
+        formData.append('fileToUpload', req.file.buffer, req.file.originalname);
 
-      // Read the file from the request
-      const buffer = await new Promise((resolve, reject) => {
-        const chunks = [];
-        req.on('data', chunk => chunks.push(chunk));
-        req.on('end', () => resolve(Buffer.concat(chunks)));
-        req.on('error', reject);
-      });
+        // Send POST request to Catbox API
+        const response = await fetch('https://catbox.moe/user/api.php', {
+          method: 'POST',
+          body: formData,
+          headers: formData.getHeaders(),
+        });
 
-      // Add the file to the form with the correct file name
-      form.append('fileToUpload', Readable.from(buffer), { filename: fileName });
+        const data = await response.text(); // Expect the URL as the response
 
-      // Send POST request to Catbox API
-      const response = await fetch('https://catbox.moe/user/api.php', {
-        method: 'POST',
-        body: form,
-        headers: form.getHeaders(),
-      });
-
-      const url = await response.text(); // The response is expected to be a URL
-
-      // Send back the Catbox URL as the response with additional fields
-      res.status(200).json({
-        success: true,
-        Creator: "ABRO TECH",
-        Contact: "wa.me/2348100151048",
-        url: url.trim(),  // Use the URL directly from the Catbox response
-      });
-    } catch (error) {
-      console.error('Error uploading file:', error.message);
-      res.status(500).json({ success: false, message: 'Failed to upload file to Catbox' });
-    }
+        // Send back the Catbox URL as the response along with additional fields
+        res.status(200).json({
+          success: true,
+          Creator: "ABRO TECH",
+          Contact: "wa.me/2348100151048",
+          url: data,  // Use the URL directly from the Catbox response
+        });
+      } catch (error) {
+        console.error('Error uploading file:', error.message);
+        res.status(500).json({ success: false, message: 'Failed to upload file to Catbox' });
+      }
+    });
   } else {
-    // Handle any non-POST requests
+    // Handle non-POST requests
     res.status(405).json({ success: false, message: 'Method Not Allowed' });
   }
 };
