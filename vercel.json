@@ -24,6 +24,14 @@
     {
       "src": "api/docs.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "api/ytmp3.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/ytmp4.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
@@ -50,6 +58,14 @@
     {
       "src": "/api/reminiByabro",
       "dest": "/api/reminiByabro.js"
+    },
+    {
+      "src": "/api/ytmp3",
+      "dest": "/api/ytmp3.js"
+    },
+    {
+      "src": "/api/ytmp4",
+      "dest": "/api/ytmp4.js"
     }
   ]
 }
