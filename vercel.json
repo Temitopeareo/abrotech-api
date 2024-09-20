@@ -16,12 +16,20 @@
     {
       "src": "api/reminiByabro.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "build/index.html",
+      "use": "@vercel/statics"
+    },
+    {
+      "src": "api/docs.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/",
-      "dest": "/api/docs.js" 
+      "dest": "/build/index.html" 
     },
     {
       "src": "/docs",
