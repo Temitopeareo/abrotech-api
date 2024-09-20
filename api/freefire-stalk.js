@@ -33,7 +33,28 @@ module.exports = async (req, res) => {
                     success: true,
                     Creator: 'ABRO TECH',
                     Contact: 'wa.me/2348100151048',
-                    FreeFireInfo: data.basicInfo.nickname
+                    playerInfo: {
+freefireUserId: data.basicInfo.accountId,
+playerName: data.basicInfo.nickname,
+playerLevel: data.basicInfo.level,
+"likes: data.basicInfo.liked,
+playerRegion: data.basicInfo.region,
+playerBio: data.socialInfo.signature
+},
+petInfo: {
+petName: data.petInfo.name,
+petLevel: data.petInfo.liked
+},
+guildInfo: {
+guildId: data.clanBasicInfo.clanId,
+guildName: data.clanBasicInfo.clanName,
+guildLevel: data.clanBasicInfo.clanLevel,
+guildMem: data.clanBasicInfo.memberNum,
+guildLeader: data.captainBasicInfo.nickname,
+guildLeaderId: data.captainBasicInfo.accountId,
+guildLeaderLevel: data.captainBasicInfo.level,
+guildLeaderLikes: data.captainBasicInfo.liked
+}
         });
   } catch (error) {
     // Log the error and send an error response
