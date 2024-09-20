@@ -29,7 +29,12 @@ module.exports = async (req, res) => {
 
     // Send the external API response as-is
     const data = await response.json();
-    return res.json(data);
+    return res.status(200).json({
+                    success: true,
+                    Creator: 'ABRO TECH',
+                    Contact: 'wa.me/2348100151048',
+                    enhancedImageUrl: data
+        });
   } catch (error) {
     // Log the error and send an error response
     console.error('Failed to fetch player data:', error.message);
