@@ -20,6 +20,10 @@
   ],
   "routes": [
     {
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
       "src": "/api/upload-file",
       "dest": "/api/upload-file.js"
     },
