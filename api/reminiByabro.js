@@ -16,7 +16,7 @@ module.exports.config = {
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     // Handle file upload using multer
-    upload.single('abrofile')(req, res, async (err) => {
+    upload.single('image')(req, res, async (err) => {
       if (err) {
         console.error('Error uploading file:', err.message);
         return res.status(500).json({ success: false, message: 'Failed to upload file' });
@@ -38,8 +38,7 @@ module.exports = async (req, res) => {
 
         const data = await response.text(); // Expect the URL as the response
 
-                // Step 2: Use the uploaded image URL with the Junn4 HDR API
-                const hdrApiUrl = `https://api.junn4.my.id/tools/hdr?url=${encodeURIComponent(data)}`;
+        const hdrApiUrl = `https://api.junn4.my.id/tools/hdr?url=${encodeURIComponent(data)}`;
                 const hdrResponse = await fetch(hdrApiUrl);
                 const hdrResult = await hdrResponse.json();
 
@@ -48,18 +47,15 @@ module.exports = async (req, res) => {
                     success: true,
                     Creator: 'ABRO TECH',
                     Contact: 'wa.me/2348100151048',
-                    enhancedImageUrl: hdrResult.result // Extracting only the "result" field
-                });
-            } catch (error) {
-                return res.status(500).json({
-                    success: false,
-                    message: 'Something went wrong while processing the image',
-                    error: error.message
-                });
-            }
+                    enhancedImageUrl: hdrResult.result
         });
-    } else {
-        res.setHeader('Allow', ['POST']);
-        res.status(405).end(`Method ${req.method} Not Allowed`);
-    }
+      } catch (error) {
+        console.error('Error uploading file:', error.message);
+        res.status(500).json({ success: false, message: 'Failed to upload file to Catbox' });
+      }
+    });
+  } else {
+    // Handle non-POST requests
+    res.status(405).json({ success: false, message: 'Method Not Allowed' });
+  }
 };
