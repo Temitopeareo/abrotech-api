@@ -12,9 +12,37 @@
     {
       "src": "api/freefire-stalk.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "api/reminiByabro.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "build/index.html",
+      "use": "@vercel/statics"
+    },
+    {
+      "src": "api/docs.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/ytmp3.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/ytmp4.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
+    {
+      "src": "/",
+      "dest": "/build/index.html" 
+    },
+    {
+      "src": "/docs",
+      "dest": "/api/docs.js"
+    },
     {
       "src": "/api/upload-file",
       "dest": "/api/upload-file.js"
@@ -26,6 +54,18 @@
     {
       "src": "/api/freefire-stalk",
       "dest": "/api/freefire-stalk.js"
+    },
+    {
+      "src": "/api/reminiByabro",
+      "dest": "/api/reminiByabro.js"
+    },
+    {
+      "src": "/api/ytmp3",
+      "dest": "/api/ytmp3.js"
+    },
+    {
+      "src": "/api/ytmp4",
+      "dest": "/api/ytmp4.js"
     }
   ]
 }

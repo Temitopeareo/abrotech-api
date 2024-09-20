@@ -16,7 +16,7 @@ module.exports.config = {
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     // Handle file upload using multer
-    upload.single('abrofile')(req, res, async (err) => {
+    upload.single('image')(req, res, async (err) => {
       if (err) {
         console.error('Error uploading file:', err.message);
         return res.status(500).json({ success: false, message: 'Failed to upload file' });
@@ -38,12 +38,16 @@ module.exports = async (req, res) => {
 
         const data = await response.text(); // Expect the URL as the response
 
-        // Send back the Catbox URL as the response along with additional fields
-        res.status(200).json({
-          success: true,
-          Creator: "ABRO TECH",
-          Contact: "wa.me/2348100151048",
-          url: data,  // Use the URL directly from the Catbox response
+        const hdrApiUrl = `https://api.junn4.my.id/tools/hdr?url=${encodeURIComponent(data)}`;
+                const hdrResponse = await fetch(hdrApiUrl);
+                const hdrResult = await hdrResponse.json();
+
+                // Step 3: Return only the enhanced image URL (the "result" field)
+                return res.status(200).json({
+                    success: true,
+                    Creator: 'ABRO TECH',
+                    Contact: 'wa.me/2348100151048',
+                    enhancedImageUrl: hdrResult.result
         });
       } catch (error) {
         console.error('Error uploading file:', error.message);
