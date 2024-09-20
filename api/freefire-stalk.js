@@ -33,7 +33,7 @@ module.exports = async (req, res) => {
                     success: true,
                     Creator: 'ABRO TECH',
                     Contact: 'wa.me/2348100151048',
-                    FREE FIRE INFO: data
+                    FreeFireInfo: data
         });
   } catch (error) {
     // Log the error and send an error response
