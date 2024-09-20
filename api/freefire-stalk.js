@@ -37,7 +37,7 @@ module.exports = async (req, res) => {
 freefireUserId: data.basicInfo.accountId,
 playerName: data.basicInfo.nickname,
 playerLevel: data.basicInfo.level,
-"likes: data.basicInfo.liked,
+likes: data.basicInfo.liked,
 playerRegion: data.basicInfo.region,
 playerBio: data.socialInfo.signature
 },
