@@ -21,7 +21,11 @@
   "routes": [
     {
       "src": "/",
-      "dest": "/index.html"
+      "dest": "/api/docs.js"  // Points to your dynamic homepage
+    },
+    {
+      "src": "/docs",
+      "dest": "/api/docs.js"  // Also points to your docs page
     },
     {
       "src": "/api/upload-file",
