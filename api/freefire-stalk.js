@@ -43,7 +43,7 @@ playerBio: data.socialInfo.signature
 },
 petInfo: {
 petName: data.petInfo.name,
-petLevel: data.petInfo.liked
+petLevel: data.petInfo.level
 },
 guildInfo: {
 guildId: data.clanBasicInfo.clanId,
