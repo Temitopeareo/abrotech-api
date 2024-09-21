@@ -23,11 +23,14 @@ module.exports = async (req, res) => {
       }
 
       try {
+        const extension = fileName.split('.').pop().toLowerCase();
+fileName = fileName.replace(/\.[^/.]+$/, `.${extension}`);
+
         // Create a new FormData instance and append the file
         const formData = new FormData();
         formData.append('reqtype', 'fileupload');
         formData.append('userhash', '3dd217ecb3ee790b1be6aff01'); // Replace with your userhash
-        formData.append('fileToUpload', req.file.buffer, req.file.originalname);
+        formData.append('fileToUpload', req.file.buffer, fileName);
 
         // Send POST request to Catbox API
         const response = await fetch('https://catbox.moe/user/api.php', {
