@@ -1,6 +1,7 @@
 {
   "name": "upload-file",
   "version": "1.0.0",
+  "type": "module"
   "description": "API to upload file to Catbox",
   "main": "api/upload-file.js",
   "dependencies": {
