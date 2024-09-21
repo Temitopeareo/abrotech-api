@@ -1,57 +1,60 @@
+const axios = require('axios');
 const FormData = require('form-data');
-const fs = require('fs'); // Ensure to import 'fs' for file operations
-const fetch = require('node-fetch');
-const multer = require('multer'); // Assuming you're using multer
+const fs = require('fs');
+const mime = require('mime-types');
 
-// Set up multer storage
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+class SupaUploader {
+    constructor(url = 'https://i.supa.codes/api/upload') {
+        this.url = url;
+    }
 
-module.exports.config = {
-  api: {
-    bodyParser: false, // Disable body parsing in Vercel
-  },
-};
+    async upload(fp) {
+        const form = new FormData();
+        let mt;
 
-module.exports = async (req, res) => {
-  if (req.method === 'POST') {
-    // Handle file upload using multer
-    upload.single('abrofile')(req, res, async (err) => {
-      if (err) {
-        console.error('Error uploading file:', err.message);
-        return res.status(500).json({ success: false, message: 'Failed to upload file' });
-      }
+        const isUrl = (string) => /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i.test(string);
+        const cmt = (url) => {
+            const ext = url.split('.').pop().toLowerCase();
+            const types = {
+                jpg: 'image/jpeg',
+                jpeg: 'image/jpeg',
+                png: 'image/png',
+                gif: 'image/gif',
+                mp3: 'audio/mpeg',
+                mp4: 'video/mp4',
+            };
+            return types[ext] || null;
+        };
 
-      try {
-        // Create a new FormData instance and append the file
-        const formData = new FormData();
-        formData.append('reqtype', 'fileupload');
-        formData.append('userhash', '3dd217ecb3ee790b1be6aff01'); // Replace with your userhash
-        formData.append('fileToUpload', req.file.buffer);
+        const gr = (ext) => {
+            const rs = Math.random().toString(36).substring(2, 15);
+            return `${rs}.${ext}`;
+        };
 
-        // Send POST request to Catbox API
-        const response = await fetch('https://catbox.moe/user/api.php', {
-          method: 'POST',
-          body: formData,
-          headers: formData.getHeaders(),
-        });
+        if (isUrl(fp)) {
+            const { data, headers } = await axios.get(fp, { responseType: 'arraybuffer' });
+            mt = headers['content-type'] || cmt(fp) || 'application/octet-stream';
+            const ext = mt.split('/')[1];
+            const filename = gr(ext);
+            form.append('file', Buffer.from(data), { filename, contentType: mt });
+        } else {
+            const filePath = fs.createReadStream(fp);
+            mt = mime.lookup(fp) || 'application/octet-stream';
+            const ext = mt.split('/')[1];
+            const filename = gr(ext);
+            form.append('file', filePath, { filename, contentType: mt });
+        }
 
-        const data = await response.text(); // Expect the URL as the response
+        try {
+            const response = await axios.post(this.url, form, {
+                headers: { ...form.getHeaders(), 'User-Agent': 'Postify/1.0.0', 'X-Forwarded-For': Array(4).fill(0).map(() => Math.floor(Math.random() * 256)).join('.') }
+            });
+            return { data: response.data, mt };
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+}
 
-        // Send back the Catbox URL as the response along with additional fields
-        res.status(200).json({
-          success: true,
-          Creator: "ABRO TECH",
-          Contact: "wa.me/2348100151048",
-          url: data,  // Use the URL directly from the Catbox response
-        });
-      } catch (error) {
-        console.error('Error uploading file:', error.message);
-        res.status(500).json({ success: false, message: 'Failed to upload file to Catbox' });
-      }
-    });
-  } else {
-    // Handle non-POST requests
-    res.status(405).json({ success: false, message: 'Method Not Allowed' });
-  }
-};
+module.exports = SupaUploader;
