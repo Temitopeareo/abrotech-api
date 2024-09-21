@@ -14,6 +14,8 @@
     "util": "^0.12.5",
     "axios": "^1.6.0",
     "millify": "^6.1.0",
-    "ytdl-core": "^4.11.5"
+    "ytdl-core": "^4.11.5",
+    "mime-types": "^2.1.35",
+    "form-data": "^4.0.0"
 }
 }
